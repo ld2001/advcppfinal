@@ -2,6 +2,7 @@
 #include <fstream>
 #include <string>
 #include "bitmap.h"
+#include <math.h>
 
 using namespace std;
 
@@ -120,8 +121,30 @@ int main(int argc, char** argv)
     }
     if(flag == "-noise"s)
     {
-        image.addNoise(image,100,10);
-//        scaleDown(image);
+
+
+//
+//        Bitmap ** mapArray = new Bitmap* [7];
+//        mapArray[7] = new Bitmap[7];
+
+        for(int i = 0; i < 7; i++ ) {
+            for(uint8_t j = 0; j < 7; j++) {
+                Bitmap temp = image;
+
+                int percent = pow(2,i);
+                uint8_t pixels = (uint8_t) pow(2,j);
+
+                temp.addNoise(temp,percent,pixels);
+                string outfile2;
+                outfile2 = outfile + "_" + to_string(i) + "_" + to_string(j) + ".bmp";
+
+                ofstream out2;
+                out2.open(outfile2, ios::binary);
+                out2 << temp;
+                out2.close();
+
+            }
+        }
     }
 
     out.open(outfile, ios::binary);
