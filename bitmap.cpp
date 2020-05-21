@@ -4,6 +4,10 @@
 
 #include "bitmap.h"
 #include <iostream>
+#include <cstdlib>
+#include <ctime>
+#include <iostream>
+#include <algorithm>
 
 Bitmap::Bitmap () {}
 
@@ -682,3 +686,41 @@ void Bitmap::gaussPoint (Bitmap & b, int height, int width) {
     return;
 }
 
+void Bitmap::addNoise (Bitmap & b, int pixelChangePer, uint8_t pixelChangeAmt) {
+
+    srand((unsigned) time(0));
+
+    char data2Mask[3] = {'r', 'g', 'b'};
+
+    for (int i = 0; i < b.pixelCount; i++) {
+        int randomVal = (rand() % 100);
+
+        if(pixelChangePer >= randomVal) {
+            if(randomVal % 2 == 0) {
+                for (int j = 0; j < 3; j++) {
+                    uint8_t currentVal = getColorVal(b.data2[i],data2Mask[j]);
+                    uint8_t potentialVal = currentVal + pixelChangeAmt;
+                    if(potentialVal < 255 && potentialVal < currentVal) {
+                        // Buffer overflow happened
+                        potentialVal = 255;
+                    }
+                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
+                }
+            } else {
+                for (int j = 0; j < 3; j++) {
+                    uint8_t currentVal = getColorVal(b.data2[i],data2Mask[j]);
+                    uint8_t potentialVal = currentVal - pixelChangeAmt;
+                    if(potentialVal > 0 && potentialVal > currentVal) {
+                        // Buffer overflow happened
+                        potentialVal = 0;
+                    }
+                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
+
+//                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], getColorVal(b.data2[i],data2Mask[j])+pixelChangeAmt);
+                }
+            }
+        }
+    }
+
+    return;
+}

@@ -118,6 +118,11 @@ int main(int argc, char** argv)
         image.scaleDown(image);
 //        scaleDown(image);
     }
+    if(flag == "-noise"s)
+    {
+        image.addNoise(image,100,10);
+//        scaleDown(image);
+    }
 
     out.open(outfile, ios::binary);
     out << image;

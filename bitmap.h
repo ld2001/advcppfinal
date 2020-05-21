@@ -47,6 +47,7 @@ private:
     void gaussPoint (Bitmap & b, int height, int width);
 
 
+
     /**
      * Read in an image.
      * reads a bitmap in from the stream
@@ -322,6 +323,11 @@ public:
  * scales the image by a factor of 1/2.
  */
     void scaleDown(Bitmap& b);
+
+/**
+ * Adds noise of pixelChangePer (%) and pixelChangeAmt.
+ */
+    void addNoise (Bitmap & b, int pixelChangePer, uint8_t pixelChangeAmt);
 };
 
 class BitmapException : public std::exception
