@@ -2,6 +2,7 @@
 #include <string>
 #include <string.h>
 
+
 using namespace std;
 struct uint24_t
 {
@@ -347,3 +348,4 @@ public:
 
     void print_exception() {}
 };
+
