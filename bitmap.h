@@ -1,7 +1,8 @@
 #include <iostream>
 #include <string>
 #include <string.h>
-
+#include <map>
+#include <ctime>
 
 using namespace std;
 struct uint24_t
@@ -12,7 +13,7 @@ struct uint24_t
 };
 class Bitmap
 {
-private:
+public:
 
     char tag[2];
     uint32_t fileSize;
@@ -329,6 +330,10 @@ public:
  * Adds noise of pixelChangePer (%) and pixelChangeAmt.
  */
     void addNoise (Bitmap & b, int pixelChangePer, uint8_t pixelChangeAmt);
+
+    void updateMap (Bitmap & b, map <pair<int,int>,int> signal);
+
+    double returnMatch (Bitmap & b, map <pair<int,int>,int> signal, Bitmap & c);
 };
 
 class BitmapException : public std::exception

@@ -6,12 +6,32 @@
 
 #IncludeRegexTransform: 
 
+C:/Users/LDin21/Documents/GitHub/advcppfinal/bitmap.cpp
+bitmap.h
+C:/Users/LDin21/Documents/GitHub/advcppfinal/bitmap.h
+iostream
+-
+cstdlib
+-
+ctime
+-
+iostream
+-
+algorithm
+-
+vector
+-
+
 C:/Users/LDin21/Documents/GitHub/advcppfinal/bitmap.h
 iostream
 -
 string
 -
 string.h
+-
+map
+-
+ctime
 -
 
 C:/Users/LDin21/Documents/GitHub/advcppfinal/main.cpp

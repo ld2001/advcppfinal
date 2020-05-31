@@ -121,8 +121,6 @@ int main(int argc, char** argv)
     }
     if(flag == "-noise"s)
     {
-
-
 //
 //        Bitmap ** mapArray = new Bitmap* [7];
 //        mapArray[7] = new Bitmap[7];
