@@ -5,5 +5,6 @@ CMakeFiles/advcppfinal.dir/bitmap.cpp.obj: ../bitmap.cpp
 CMakeFiles/advcppfinal.dir/bitmap.cpp.obj: ../bitmap.h
 
 CMakeFiles/advcppfinal.dir/main.cpp.obj: ../bitmap.h
+CMakeFiles/advcppfinal.dir/main.cpp.obj: ../imageprocessing.cpp
 CMakeFiles/advcppfinal.dir/main.cpp.obj: ../main.cpp
 

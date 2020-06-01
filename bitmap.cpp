@@ -2,6 +2,9 @@
 // Created by LDin21 on 3/31/2020.
 //
 
+#ifndef BITMAP_CPP
+#define BITMAP_CPP
+
 #include "bitmap.h"
 #include <iostream>
 #include <cstdlib>
@@ -11,6 +14,37 @@
 #include <vector>
 
 Bitmap::Bitmap () {}
+
+Bitmap::Bitmap (const Bitmap &obj) {
+    memcpy(tag,obj.tag,sizeof(char) * 2);
+    fileSize = obj.fileSize;
+    reserved1 = obj.reserved1;
+    reserved2 = obj.reserved2;
+    pixelOffset = obj.pixelOffset;
+    headersize = obj.headersize;
+    imageWidth = obj.imageWidth;
+    imageHeight = obj.imageHeight;
+    planes = obj.planes;
+    bitsPerPixel = obj.bitsPerPixel;
+    compression = obj.compression;
+    imageSize = obj.imageSize;
+    xPixels = obj.xPixels;
+    yPixels = obj.yPixels;
+    totalColors = obj.totalColors;
+    importantColors = obj.importantColors;
+    redMask = obj.redMask;
+    greenMask = obj.greenMask;
+    blueMask = obj.blueMask;
+    alphaMask = obj.alphaMask;
+    data = new uint32_t[obj.pixelCount];
+    memcpy(data,obj.data,sizeof(uint32_t)  * obj.pixelCount);
+    data2 = new uint24_t[obj.pixelCount];
+    memcpy(data2,obj.data2, sizeof(uint24_t) * obj.pixelCount);
+    padding = obj.padding;
+
+    pixelCount = obj.pixelCount;
+    memcpy(buffer,obj.buffer, sizeof(char) * 68);
+}
 
 void Bitmap::cellShade(Bitmap& b){
 
@@ -726,129 +760,129 @@ void Bitmap::addNoise (Bitmap & b, int pixelChangePer, uint8_t pixelChangeAmt) {
     return;
 }
 
-using point = pair<int,int>;
-
-map <pair<int,int>,int> makeMap (double percentile, int height, int width) {
-
-    srand((unsigned) time(0));
-
-    map <pair<int,int>,int> mapArray;
-
-    if(percentile > 1 || percentile < 0) {
-        cout << "Please return a valid percentile range" << endl;
-        return mapArray;
-    }
-
-    const int percent = (int) percentile * 100;
-
-    for(int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            int random = rand();
-            if(random % 100 > percent) {
-                if(random % 2 == 0) {
-                    mapArray[make_pair(height, width)] = 1;
-                } else {
-                    mapArray[make_pair(height, width)] = -1;
-                }
-            }
-        }
-    }
-
-    return mapArray;
-
-}
+//using point = pair<int,int>;
+//
+//map <pair<int,int>,int> makeMap (double percentile, int height, int width) {
+//
+//    srand((unsigned) time(0));
+//
+//    map <pair<int,int>,int> mapArray;
+//
+//    if(percentile > 1 || percentile < 0) {
+//        cout << "Please return a valid percentile range" << endl;
+//        return mapArray;
+//    }
+//
+//    const int percent = (int) percentile * 100;
+//
+//    for(int i = 0; i < height; i++) {
+//        for (int j = 0; j < width; j++) {
+//            int random = rand();
+//            if(random % 100 > percent) {
+//                if(random % 2 == 0) {
+//                    mapArray[make_pair(height, width)] = 1;
+//                } else {
+//                    mapArray[make_pair(height, width)] = -1;
+//                }
+//            }
+//        }
+//    }
+//
+//    return mapArray;
+//
+//}
 
 void Bitmap::updateMap ( Bitmap & b, map <pair<int,int>,int> signal) {
-    for ( auto iter : signal ) {
-        int x = iter.first.first;
-        int y = iter.first.second;
-
-        char data2Mask[3] = {'r', 'g', 'b'};
-
-        int i = b.imageWidth * x + y;
-
-        uint8_t positiveVal = iter.second > 0 ? (uint8_t) iter.second : (uint8_t ) (iter.second * -1);
-
-        if(iter.second > 0) {
-            for (int j = 0; j < 3; j++) {
-                uint8_t currentVal = getColorVal(b.data2[i],data2Mask[j]);
-                uint8_t potentialVal = currentVal + positiveVal;
-                if(potentialVal < 255 && potentialVal < currentVal) {
-                    // Buffer overflow happened
-                    potentialVal = 255;
-                }
-                b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
-            }
-
-        } else {
-            for (int j = 0; j < 3; j++) {
-                uint8_t currentVal = getColorVal(b.data2[i],data2Mask[j]);
-                uint8_t potentialVal = currentVal - positiveVal;
-                if(potentialVal > 0 && potentialVal > currentVal) {
-                    // Buffer overflow happened
-                    potentialVal = 0;
-                }
-                b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
-
-//                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], getColorVal(b.data2[i],data2Mask[j])+pixelChangeAmt);
-            }
-        }
-    }
-}
-
-double returnMatch (Bitmap & b, map <pair<int,int>,int> signal, Bitmap & c, uint8_t gap) {
-    int match = 0;
-    int total = 0;
     char data2Mask[3] = {'r', 'g', 'b'};
 
     for ( auto iter : signal ) {
         int x = iter.first.first;
         int y = iter.first.second;
-        int i = x * b.imageWidth + y;
+        int i = b.imageWidth * x + y;
 
-        uint8_t bColor = b.getColorVal(b.data2[i],data2Mask[0]);
-        uint8_t cColor = c.getColorVal(c.data2[i],data2Mask[0]);
+        uint8_t positiveVal = iter.second >= 0 ? (uint8_t) iter.second : (uint8_t ) (iter.second * -1);
 
-        if((bColor < cColor && cColor - bColor <= gap) || (bColor >= cColor && bColor - cColor <= gap)) {
-            match += 1;
-            total += 1;
-        } else {
-            total += 1;
-        }
-    }
+        for (int j = 0; j < 3; j++) {
+                if (iter.second >= 0) {
+                    uint8_t currentVal = getColorVal(b.data2[i], data2Mask[j]);
+                    uint8_t potentialVal = currentVal + positiveVal;
 
-    double returnVal = (double) match/total;
+                    if (potentialVal < 255 && potentialVal < currentVal) {
+                        // Buffer overflow happened
+                        potentialVal = 255;
+                    }
+                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
 
-    return returnVal;
-}
-
-map <pair<int,int>,int> sequenceMap (double percentile, int height, int width, int cycles) {
-
-    vector< map <pair <int,int>,int>> mapList;
-
-    for (int i = 0; i < cycles; i++) {
-        mapList.push_back(makeMap(percentile,height,width));
-    }
-
-    map <pair <int,int>,int> returnMap;
-
-    for (int i = 0; i < height; i++) {
-        for (int j = 0; j < width; j++) {
-            pair<int,int> x = make_pair(i,j);
-            int total = 0;
-            int count = 0;
-            for(auto iterMap : mapList) {
-                if(iterMap.find(x) == iterMap.end()) {
-                    continue;
                 } else {
-                    total += iterMap[x];
-                    count ++;
+                    uint8_t currentVal = getColorVal(b.data2[i], data2Mask[j]);
+                    uint8_t potentialVal = currentVal - positiveVal;
+                    if(potentialVal > 0 && potentialVal > currentVal) {
+                        // Buffer overflow happened
+                        potentialVal = 0;
+                    }
+                    b.data2[i] = modifyPixel(b.data2[i], data2Mask[j], potentialVal);
                 }
             }
-            returnMap[x] = total/count;
-        }
-    }
 
-    return returnMap;
+
+
+    }
 }
 
+//double returnMatch (Bitmap & b, map <pair<int,int>,int> signal, Bitmap & c, uint8_t gap) {
+//    int match = 0;
+//    int total = 0;
+//    char data2Mask[3] = {'r', 'g', 'b'};
+//
+//    for ( auto iter : signal ) {
+//        int x = iter.first.first;
+//        int y = iter.first.second;
+//        int i = x * b.imageWidth + y;
+//
+//        uint8_t bColor = b.getColorVal(b.data2[i],data2Mask[0]);
+//        uint8_t cColor = c.getColorVal(c.data2[i],data2Mask[0]);
+//
+//        if((bColor < cColor && cColor - bColor <= gap) || (bColor >= cColor && bColor - cColor <= gap)) {
+//            match += 1;
+//            total += 1;
+//        } else {
+//            total += 1;
+//        }
+//    }
+//
+//    double returnVal = (double) match/total;
+//
+//    return returnVal;
+//}
+//
+//map <pair<int,int>,int> sequenceMap (double percentile, int height, int width, int cycles) {
+//
+//    vector< map <pair <int,int>,int>> mapList;
+//
+//    for (int i = 0; i < cycles; i++) {
+//        mapList.push_back(makeMap(percentile,height,width));
+//    }
+//
+//    map <pair <int,int>,int> returnMap;
+//
+//    for (int i = 0; i < height; i++) {
+//        for (int j = 0; j < width; j++) {
+//            pair<int,int> x = make_pair(i,j);
+//            int total = 0;
+//            int count = 0;
+//            for(auto iterMap : mapList) {
+//                if(iterMap.find(x) == iterMap.end()) {
+//                    continue;
+//                } else {
+//                    total += iterMap[x];
+//                    count ++;
+//                }
+//            }
+//            returnMap[x] = total/count;
+//        }
+//    }
+//
+//    return returnMap;
+//}
+
+#endif

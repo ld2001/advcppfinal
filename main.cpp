@@ -3,6 +3,7 @@
 #include <string>
 #include "bitmap.h"
 #include <math.h>
+#include "imageprocessing.cpp"
 
 using namespace std;
 
@@ -143,6 +144,18 @@ int main(int argc, char** argv)
 
             }
         }
+    }
+
+    if(flag == "-test"s)
+    {
+        Bitmap temp = image;
+        Bitmap temp2 = image;
+        map <pair<int,int>,int> tempMap = sequenceMap (0.99, temp.imageHeight, temp.imageWidth, 100);
+        temp2.updateMap(temp2, tempMap);
+        cout << "Temp vs Temp2 matches are: " << returnMatch(temp,tempMap,temp2,0) << endl;
+        out.open("1 Cycle.bmp", ios::binary);
+        out << temp2;
+        out.close();
     }
 
     out.open(outfile, ios::binary);

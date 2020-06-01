@@ -1,3 +1,6 @@
+#ifndef BITMAP_H
+#define BITMAP_H
+
 #include <iostream>
 #include <string>
 #include <string.h>
@@ -48,6 +51,7 @@ public:
     void pixelateBox (Bitmap & b, uint32_t startingR, uint32_t startingC, uint32_t endingR, uint32_t endingC);
     void gaussPoint (Bitmap & b, int height, int width);
 
+    Bitmap(const Bitmap & b2);
 
 
     /**
@@ -66,70 +70,70 @@ public:
 
         in.read((char*)&b.tag,2);
 
-        cout << b.tag[0] << " : " << b.tag[1] << endl;
+//        cout << b.tag[0] << " : " << b.tag[1] << endl;
         if(strncmp (b.tag, "BM",2)) {
-            cout << "File not recognized as BMP format" << endl;
+//            cout << "File not recognized as BMP format" << endl;
         }
 
         in.read((char*)&b.fileSize,4);
-        cout << b.fileSize << " filesize" << endl;
+//        cout << b.fileSize << " filesize" << endl;
 
         in.read((char*)&b.reserved1,2);
         in.read((char*)&b.reserved2,2);
-        cout << b.reserved1 << " reserved 1 " << b.reserved2 << " reserved 2" << endl;
+//        cout << b.reserved1 << " reserved 1 " << b.reserved2 << " reserved 2" << endl;
 
 
         in.read((char*)&b.pixelOffset,4);
-        cout << b.pixelOffset << " offset" << endl;
+//        cout << b.pixelOffset << " offset" << endl;
 
         in.read((char*)&b.headersize,4);
-        cout << b.headersize << " headersize" << endl;
+//        cout << b.headersize << " headersize" << endl;
 
         in.read((char*)&b.imageWidth,4);
-        cout << b.imageWidth << " width" << endl;
+//        cout << b.imageWidth << " width" << endl;
 
         in.read((char*)&b.imageHeight,4);
-        cout << b.imageHeight << " height" << endl;
+//        cout << b.imageHeight << " height" << endl;
 
         in.read((char*)&b.planes,2);
-        cout << b.planes << " planes" << endl;
+//        cout << b.planes << " planes" << endl;
 
         in.read((char*)&b.bitsPerPixel,2);
-        cout << b.bitsPerPixel << " bitsPerPixel" << endl;
+//        cout << b.bitsPerPixel << " bitsPerPixel" << endl;
 
         in.read((char*)&b.compression,4);
-        cout << b.compression << " compression" << endl;
+//        cout << b.compression << " compression" << endl;
 
         in.read((char*)&b.imageSize,4);
-        cout << b.imageSize << " imagesize" << endl;
+//        cout << b.imageSize << " imagesize" << endl;
 
         in.read((char*)&b.xPixels,4);
-        cout << b.xPixels << " xPixels" << endl;
+//        cout << b.xPixels << " xPixels" << endl;
 
         in.read((char*)&b.yPixels,4);
-        cout << b.yPixels << " yPixels" << endl;
+//        cout << b.yPixels << " yPixels" << endl;
 
         in.read((char*)&b.totalColors,4);
-        cout << b.totalColors << " totalColors" << endl;
+//        cout << b.totalColors << " totalColors" << endl;
 
         in.read((char*)&b.importantColors,4);
-        cout << b.importantColors << " importantColors" << endl;
+//        cout << b.importantColors << " importantColors" << endl;
 
         if (b.compression == 3){
             in.read((char *) &b.redMask, 4);
-            cout << hex << b.redMask << " redMask" << endl;
+//            cout << hex << b.redMask << " redMask" << endl;
 
             in.read((char *) &b.greenMask, 4);
-            cout << hex << b.greenMask << " greenMask" << endl;
+//            cout << hex << b.greenMask << " greenMask" << endl;
 
             in.read((char *) &b.blueMask, 4);
-            cout << hex << b.blueMask << " blueMask" << endl;
+//            cout << hex << b.blueMask << " blueMask" << endl;
 
             in.read((char *) &b.alphaMask, 4);
-            cout << hex << b.alphaMask << " alphaMask" << endl;
+//            cout << hex << b.alphaMask << " alphaMask" << endl;
 
             in.read((char *) &b.alphaMask, 68);
-            cout << "read in 68 useless bits" << endl;
+//            cout << "read in 68 useless bits" << endl;
         }
 
         b.pixelCount = b.imageWidth * b.imageHeight;
@@ -138,11 +142,11 @@ public:
         b.data2 = new uint24_t[b.pixelCount];
 
         if (b.compression == 3) {
-            cout << "Compression mode is 32 bits, currently ingesting" << endl;
+//            cout << "Compression mode is 32 bits, currently ingesting" << endl;
             in.read((char*) b.data, b.pixelCount * 4);
 
         } else {
-            cout << "Compression mode is 24 bits, currently ingesting" << endl;
+//            cout << "Compression mode is 24 bits, currently ingesting" << endl;
             uint32_t padCounter = 0;
             uint32_t temp = b.imageWidth * 3;
             while(temp % 4 != 0) {
@@ -174,73 +178,73 @@ public:
     friend std::ostream& operator<<(std::ostream& in, Bitmap& b) {
         in.write((char*)&b.tag,2);
 
-        cout << b.tag[0] << " : " << b.tag[1] << endl;
+//        cout << b.tag[0] << " : " << b.tag[1] << endl;
 
         in.write((char*)&b.fileSize,4);
-        cout << b.fileSize << " filesize" << endl;
+//        cout << b.fileSize << " filesize" << endl;
 
         in.write((char*)&b.reserved1,2);
         in.write((char*)&b.reserved2,2);
-        cout << b.reserved1 << " reserved 1 " << b.reserved2 << " reserved 2" << endl;
+//        cout << b.reserved1 << " reserved 1 " << b.reserved2 << " reserved 2" << endl;
 
 
         in.write((char*)&b.pixelOffset,4);
-        cout << b.pixelOffset << " offset" << endl;
+//        cout << b.pixelOffset << " offset" << endl;
 
         in.write((char*)&b.headersize,4);
-        cout << b.headersize << " headersize" << endl;
+//        cout << b.headersize << " headersize" << endl;
 
         in.write((char*)&b.imageWidth,4);
-        cout << b.imageWidth << " width" << endl;
+//        cout << b.imageWidth << " width" << endl;
 
         in.write((char*)&b.imageHeight,4);
-        cout << b.imageHeight << " height" << endl;
+//        cout << b.imageHeight << " height" << endl;
 
         in.write((char*)&b.planes,2);
-        cout << b.planes << " planes" << endl;
+//        cout << b.planes << " planes" << endl;
 
         in.write((char*)&b.bitsPerPixel,2);
-        cout << b.bitsPerPixel << " bitsPerPixel" << endl;
+//        cout << b.bitsPerPixel << " bitsPerPixel" << endl;
 
         in.write((char*)&b.compression,4);
-        cout << b.compression << " compression" << endl;
+//        cout << b.compression << " compression" << endl;
 
         in.write((char*)&b.imageSize,4);
-        cout << b.imageSize << " imagesize" << endl;
+//        cout << b.imageSize << " imagesize" << endl;
 
         in.write((char*)&b.xPixels,4);
-        cout << b.xPixels << " xPixels" << endl;
+//        cout << b.xPixels << " xPixels" << endl;
 
         in.write((char*)&b.yPixels,4);
-        cout << b.yPixels << " yPixels" << endl;
+//        cout << b.yPixels << " yPixels" << endl;
 
         in.write((char*)&b.totalColors,4);
-        cout << b.totalColors << " totalColors" << endl;
+//        cout << b.totalColors << " totalColors" << endl;
 
         in.write((char*)&b.importantColors,4);
-        cout << b.importantColors << " importantColors" << endl;
+//        cout << b.importantColors << " importantColors" << endl;
 
         if (b.compression == 3){
             in.write((char *) &b.redMask, 4);
-            cout << hex << b.redMask << " redMask" << endl;
+//            cout << hex << b.redMask << " redMask" << endl;
 
             in.write((char *) &b.greenMask, 4);
-            cout << hex << b.greenMask << " greenMask" << endl;
+//            cout << hex << b.greenMask << " greenMask" << endl;
 
             in.write((char *) &b.blueMask, 4);
-            cout << hex << b.blueMask << " blueMask" << endl;
+//            cout << hex << b.blueMask << " blueMask" << endl;
 
             in.write((char *) &b.alphaMask, 4);
-            cout << hex << b.alphaMask << " alphaMask" << endl;
+//            cout << hex << b.alphaMask << " alphaMask" << endl;
 
             in.write((char *) &b.alphaMask, 68);
         }
 
         if (b.compression == 3) {
-            cout << "32 bits, currently writing" << endl;
+//            cout << "32 bits, currently writing" << endl;
             in.write((char*) b.data, 4*b.pixelCount);
         } else {
-            cout << "24 bits, currently writing" << endl;
+//            cout << "24 bits, currently writing" << endl;
             for(int i = 0; i < b.imageHeight; i++) {
                 in.write((char*) &b.data2[i * b.imageWidth], 3*b.imageWidth);
                 uint8_t zero = 0;
@@ -354,3 +358,4 @@ public:
     void print_exception() {}
 };
 
+#endif
